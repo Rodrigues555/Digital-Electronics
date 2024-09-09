@@ -1,0 +1,180 @@
+ml lang="en" ng-app="digitalElectronicsApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Electronics</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .pdf-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .quiz-link {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #e2e6ea;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .quiz-link:hover {
+            background-color: #d6d8db;
+        }
+
+        .admin-highlight {
+            background-color: #e7f0ff;
+            border: 1px dashed #007bff;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body ng-controller="MainController">
+    <header class="bg-dark text-white text-center py-3">
+        <h1>Digital Electronics</h1>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item" ng-class="{ active: isActiveTab('syllabus') }">
+                    <a href="#" class="nav-link" ng-click="setActiveTab('syllabus')">Syllabus</a>
+                </li>
+                <li class="nav-item" ng-class="{ active: isActiveTab('notes') }">
+                    <a href="#" class="nav-link" ng-click="setActiveTab('notes')">Module-Wise Notes</a>
+                </li>
+                <li class="nav-item" ng-class="{ active: isActiveTab('quizzes') }">
+                    <a href="#" class="nav-link" ng-click="setActiveTab('quizzes')">Module-Wise Quizzes</a>
+                </li>
+                <li class="nav-item" ng-class="{ active: isActiveTab('admin') }" ng-if="isAdmin">
+                    <a href="#" class="nav-link" ng-click="setActiveTab('admin')">Admin</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mt-4">
+        <section id="syllabus" class="tab-content" ng-show="isActiveTab('syllabus')">
+            <h2>Syllabus</h2>
+            <div class="pdf-container">
+                <iframe src="index.pdf" type="application/pdf"></iframe>
+            </div>
+        </section>
+
+        <section id="notes" class="tab-content" ng-show="isActiveTab('notes')">
+            <h2>Module-Wise Notes</h2>
+            <div class="note-section" ng-repeat="module in notes">
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.content }}</p>
+            </div>
+        </section>
+
+        <section id="quizzes" class="tab-content" ng-show="isActiveTab('quizzes')">
+            <h2>Module-Wise Quizzes</h2>
+            <div class="quiz-section">
+                <a ng-repeat="quiz in quizzes" href="{{ quiz.link }}" class="quiz-link">{{ quiz.title }}</a>
+            </div>
+        </section>
+
+        <section id="admin" class="tab-content admin-content" ng-show="isActiveTab('admin')">
+            <h2>Admin Area</h2>
+            <div class="admin-highlight">
+                <p>Admin Functionality:</p>
+                <button class="btn btn-primary" ng-click="uploadNotes()">Upload Notes</button>
+                <button class="btn btn-primary" ng-click="uploadDocs()">Upload Documents</button>
+                <p>Highlight areas where quizzes can be edited or added.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white text-center">
+        <p>&copy; 2024 Digital Electronics</p>
+    </footer>
+
+    <script>
+        angular.module('digitalElectronicsApp', [])
+            .controller('MainController', function($scope) {
+                $scope.activeTab = 'syllabus';
+                $scope.isAdmin = true; // Simulate admin check
+
+                $scope.setActiveTab = function(tab) {
+                    $scope.activeTab = tab;
+                };
+
+                $scope.isActiveTab = function(tab) {
+                    return $scope.activeTab === tab;
+                };
+
+                $scope.notes = [
+                    { title: 'Module 1', content: 'Notes for Module 1.' },
+                    { title: 'Module 2', content: 'Notes for Module 2.' },
+                    { title: 'Module 3', content: 'Notes for Module 3.' }
+                ];
+
+                $scope.quizzes = [
+                    { title: 'Module 1 Quiz', link: 'https://docs.google.com/forms/d/e/1FAIpQLScaS-c7ulndv6dx2O_T4bbh0gsOG7qvcFd-4UFYEwfPeBhuzw/viewform?usp=sf_link' },
+                    { title: 'Module 2 Quiz', link: 'https://docs.google.com/forms/d/e/1FAIpQLScaS-c7ulndv6dx2O_T4bbh0gsOG7qvcFd-4UFYEwfPeBhuzw/viewform?usp=sf_link' },
+                    { title: 'Module 3 Quiz', link: 'https://forms.gle/example3' },
+                    { title: 'Module 4 Quiz', link: 'https://forms.gle/example4' },
+                    { title: 'Module 5 Quiz', link: 'https://forms.gle/example5' }
+                ];
+
+                $scope.uploadNotes = function() {
+                    alert('Upload Notes functionality will be implemented here.');
+                };
+
+                $scope.uploadDocs = function() {
+                    alert('Upload Documents functionality will be implemented here.');
+                };
+            });
+    </script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
